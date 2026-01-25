@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sara的德语教学助手</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        prussian: {
+                            50: '#f0f4f8',
+                            100: '#d9e2ec',
+                            200: '#bcccdc',
+                            300: '#9fb3c8',
+                            400: '#829ab1',
+                            500: '#627d98',
+                            600: '#486581',
+                            700: '#334e68',
+                            800: '#243b53',
+                            900: '#102a43',
+                            950: '#0a1629',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(51, 78, 104, 0.1), 0 10px 10px -5px rgba(51, 78, 104, 0.04);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+    <div class="container mx-auto px-4 py-12 max-w-4xl">
+        <!-- Header -->
+        <header class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-bold text-prussian-800 mb-4 text-shadow">Sara的德语教学助手</h1>
+            <p class="text-lg text-prussian-600">实用工具，助力德语学习</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="space-y-12">
+            <!-- Number to Word Converter -->
+            <section class="bg-white rounded-xl shadow-md p-6 md:p-8 card-hover">
+                <h2 class="text-2xl font-semibold text-prussian-800 mb-6">数字转单词</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label for="number-input" class="block text-sm font-medium text-gray-700 mb-2">请输入数字 (1-9999)</label>
+                        <input type="number" id="number-input" min="1" max="9999" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-prussian-500 focus:border-prussian-500 transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">德语拼写</label>
+                        <div id="word-output" class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg min-h-12 flex items-center text-prussian-800 font-medium"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Umlaut Converter -->
+            <section class="bg-white rounded-xl shadow-md p-6 md:p-8 card-hover">
+                <h2 class="text-2xl font-semibold text-prussian-800 mb-6">变元音转换器</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="normal-input" class="block text-sm font-medium text-gray-700 mb-2">普通字母 (如: ae, oe, ue, ss)</label>
+                        <input type="text" id="normal-input" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-prussian-500 focus:border-prussian-500 transition-colors">
+                    </div>
+                    <div>
+                        <label for="umlaut-output" class="block text-sm font-medium text-gray-700 mb-2">德语特殊字符</label>
+                        <input type="text" id="umlaut-output" readonly class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-prussian-800 font-medium">
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-16 text-center text-gray-500 text-sm">
+            <p>专为德语学习设计的实用工具</p>
+        </footer>
+    </div>
+
+    <!-- Hidden Heart Icon (Easter Egg) -->
+    <div class="fixed bottom-6 right-6">
+        <button id="heart-btn" class="bg-prussian-800 text-white rounded-full p-3 shadow-lg hover:bg-prussian-700 transition-colors">
+            <i class="fa fa-heart"></i>
+        </button>
+        <div id="love-message" class="hidden absolute bottom-full right-0 mb-3 bg-prussian-800 text-white px-4 py-2 rounded-lg shadow-lg text-sm">
+            Du bist die beste Lehrerin der Welt! ❤️
+        </div>
+    </div>
+
+    <script>
+        // Number to German Word Conversion
+        function numberToGermanWord(number) {
+            if (number < 1 || number > 9999) return '';
+
+            const ones = ['', 'eins', 'zwei', 'drei', 'vier', 'fünf', 'sechs', 'sieben', 'acht', 'neun'];
+            const teens = ['zehn', 'elf', 'zwölf', 'dreizehn', 'vierzehn', 'fünfzehn', 'sechzehn', 'siebzehn', 'achtzehn', 'neunzehn'];
+            const tens = ['', '', 'zwanzig', 'dreißig', 'vierzig', 'fünfzig', 'sechzig', 'siebzig', 'achtzig', 'neunzig'];
+            const hundreds = ['', 'einhundert', 'zweihundert', 'dreihundert', 'vierhundert', 'fünfhundert', 'sechshundert', 'siebenhundert', 'achthundert', 'neunhundert'];
+            const thousands = ['', 'eintausend', 'zweitausend', 'dreitausend', 'viertausend', 'fünftausend', 'sechstausend', 'siebentausend', 'achttausend', 'neuntausend'];
+
+            if (number === 1000) return 'eintausend';
+
+            let result = '';
+            const thou = Math.floor(number / 1000);
+            const hund = Math.floor((number % 1000) / 100);
+            const ten = Math.floor((number % 100) / 10);
+            const one = number % 10;
+
+            if (thou > 0) {
+                result += thousands[thou];
+            }
+
+            if (hund > 0) {
+                if (result) result += ' ';
+                result += hundreds[hund];
+            }
+
+            if (ten > 1) {
+                if (result) result += ' ';
+                if (one > 0) {
+                    result += ones[one] + 'und' + tens[ten];
+                } else {
+                    result += tens[ten];
+                }
+            } else if (ten === 1) {
+                if (result) result += ' ';
+                result += teens[one];
+            } else if (one > 0) {
+                if (result) result += ' ';
+                // Special case: "eins" becomes "ein" when followed by nothing
+                if (one === 1 && hund === 0 && thou === 0) {
+                    result += 'eins';
+                } else {
+                    result += ones[one];
+                }
+            }
+
+            return result;
+        }
+
+        // Umlaut Conversion
+        function convertToUmlauts(text) {
+            return text
+                .replace(/ae/g, 'ä')
+                .replace(/oe/g, 'ö')
+                .replace(/ue/g, 'ü')
+                .replace(/ss/g, 'ß')
+                .replace(/AE/g, 'Ä')
+                .replace(/OE/g, 'Ö')
+                .replace(/UE/g, 'Ü');
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Number to Word Converter
+            const numberInput = document.getElementById('number-input');
+            const wordOutput = document.getElementById('word-output');
+
+            numberInput.addEventListener('input', function() {
+                const number = parseInt(this.value);
+                if (number >= 1 && number <= 9999) {
+                    wordOutput.textContent = numberToGermanWord(number);
+                } else {
+                    wordOutput.textContent = '';
+                }
+            });
+
+            // Umlaut Converter
+            const normalInput = document.getElementById('normal-input');
+            const umlautOutput = document.getElementById('umlaut-output');
+
+            normalInput.addEventListener('input', function() {
+                umlautOutput.value = convertToUmlauts(this.value);
+            });
+
+            // Easter Egg - Heart Icon
+            const heartBtn = document.getElementById('heart-btn');
+            const loveMessage = document.getElementById('love-message');
+
+            heartBtn.addEventListener('click', function() {
+                loveMessage.classList.toggle('hidden');
+                setTimeout(() => {
+                    loveMessage.classList.add('hidden');
+                }, 3000);
+            });
+        });
+    </script>
+</body>
+</html>
