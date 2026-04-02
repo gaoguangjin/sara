@@ -14,15 +14,18 @@ export default function EssayForm() {
   const [level, setLevel] = useState<(typeof LEVELS)[number]>('B1');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<EssayCorrectionResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
     if (!content.trim()) return;
     setLoading(true);
+    setError(null);
     try {
       const response = await correctEssay({ content, level });
       setResult(response);
     } catch (error) {
       console.error(error);
+      setError('批改失败，请稍后重试');
     } finally {
       setLoading(false);
     }
@@ -66,6 +69,12 @@ export default function EssayForm() {
         )}
         {loading ? '批改中...' : '提交批改'}
       </Button>
+
+      {error && (
+        <div className="p-4 bg-red-50 text-red-500 rounded-lg">
+          {error}
+        </div>
+      )}
 
       {result && <CorrectionResult result={result} />}
     </div>
